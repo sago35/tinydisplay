@@ -59,9 +59,7 @@ func (c *Client) Size() (x, y int16) {
 }
 
 func (c *Client) SetPixel(x, y int16, clr color.Color) {
-	c.mu.Lock()
-	c.Image.Set(int(x), int(y), clr)
-	c.mu.Unlock()
+	c.Set(int(x), int(y), clr)
 }
 
 func (c *Client) Display() error {
@@ -130,4 +128,22 @@ func (c *Client) update() error {
 		panic(err)
 	}
 	return nil
+}
+
+func (c *Client) ColorModel() color.Model {
+	return c.Image.ColorModel()
+}
+
+func (c *Client) Bounds() image.Rectangle {
+	return c.Image.Bounds()
+}
+
+func (c *Client) At(x, y int) color.Color {
+	return c.Image.At(x, y)
+}
+
+func (c *Client) Set(x, y int, clr color.Color) {
+	c.mu.Lock()
+	c.Image.Set(x, y, clr)
+	c.mu.Unlock()
 }
