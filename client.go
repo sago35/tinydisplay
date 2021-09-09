@@ -1,9 +1,11 @@
 package tinydisplay
 
 import (
+	"encoding/gob"
 	"fmt"
 	"image"
 	"image/color"
+	"image/draw"
 	"net/rpc"
 	"sync"
 	"time"
@@ -11,10 +13,14 @@ import (
 
 type Client struct {
 	Client *rpc.Client
-	Image  *image.RGBA
+	Image  draw.Image
 	mu     sync.Mutex
 	Width  int
 	Height int
+}
+
+func init() {
+	gob.Register(&image.RGBA{})
 }
 
 func NewClient(addr string, port, w, h int) (*Client, error) {
@@ -110,14 +116,14 @@ func (c *Client) DrawRGBBitmap8(x, y int16, data []uint8, w, h int16) error {
 	return nil
 }
 
-func (c *Client) SetImage(img *image.RGBA) {
+func (c *Client) SetImage(img draw.Image) {
 	c.mu.Lock()
 	c.Image = img
 	c.mu.Unlock()
 }
 
 func (c *Client) update() error {
-	args := UpdateArgs{Image: *c.Image}
+	args := UpdateArgs{Image: c.Image}
 	ret := NotImpl{}
 	err := c.Client.Call("Server.Update", args, &ret)
 	if err != nil {

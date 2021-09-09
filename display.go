@@ -3,6 +3,7 @@ package tinydisplay
 import (
 	"image"
 	"image/color"
+	"image/draw"
 
 	"fyne.io/fyne/v2"
 	"fyne.io/fyne/v2/app"
@@ -15,7 +16,7 @@ type Device struct {
 	Height int
 	canvas *canvas.Image
 	window fyne.Window
-	image  *image.RGBA
+	image  draw.Image
 }
 
 func New(w, h int) *Device {

@@ -1,8 +1,8 @@
 package tinydisplay
 
 import (
-	"image"
 	"image/color"
+	"image/draw"
 )
 
 type Server struct {
@@ -75,7 +75,7 @@ func (s *Server) ShowAndRun(args, ret *NotImpl) error {
 }
 
 type UpdateArgs struct {
-	Image image.RGBA
+	Image draw.Image
 }
 
 func (s *Server) Update(args *UpdateArgs, ret *NotImpl) error {
