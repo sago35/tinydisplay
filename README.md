@@ -1,6 +1,7 @@
 # tinydisplay
 
 `tinydisplay` is a tiny display for TinyGo development.  
+I have confirmed that it works on at least windows and ubuntu20.04.  
 
 [![](https://img.youtube.com/vi/tkNsQnIjE6g/0.jpg)](https://www.youtube.com/watch?v=tkNsQnIjE6g)
 
