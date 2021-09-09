@@ -44,7 +44,7 @@ func (d *Device) Size() (x, y int16) {
 	return int16(d.Width), int16(d.Height)
 }
 
-func (d *Device) SetPixel(x, y int16, c color.RGBA) {
+func (d *Device) SetPixel(x, y int16, c color.Color) {
 	d.image.Set(int(x), int(y), c)
 	d.canvas.Refresh()
 }
@@ -53,11 +53,11 @@ func (d *Device) Display() error {
 	panic("not impl")
 }
 
-func (d *Device) FillScreen(c color.RGBA) {
+func (d *Device) FillScreen(c color.Color) {
 	d.FillRectangle(0, 0, int16(d.Width), int16(d.Height), c)
 }
 
-func (d *Device) FillRectangle(x, y, width, height int16, c color.RGBA) error {
+func (d *Device) FillRectangle(x, y, width, height int16, c color.Color) error {
 	for yy := y; yy < y+height; yy++ {
 		for xx := x; xx < x+width; xx++ {
 			d.image.Set(int(xx), int(yy), c)
@@ -87,7 +87,7 @@ func (d *Device) ShowAndRun() {
 	d.window.ShowAndRun()
 }
 
-func RGB565ToRGBA(c uint16) color.RGBA {
+func RGB565ToRGBA(c uint16) color.Color {
 	return color.RGBA{
 		R: uint8((c & 0xF800) >> 8),
 		G: uint8((c & 0x07E0) >> 3),

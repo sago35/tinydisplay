@@ -52,7 +52,7 @@ func (c *Client) Size() (x, y int16) {
 	return ret.X, ret.Y
 }
 
-func (c *Client) SetPixel(x, y int16, clr color.RGBA) {
+func (c *Client) SetPixel(x, y int16, clr color.Color) {
 	c.mu.Lock()
 	c.Image.Set(int(x), int(y), clr)
 	c.mu.Unlock()
@@ -73,11 +73,11 @@ func (c *Client) ClearDisplay() {
 func (c *Client) WaitUntilIdle() {
 }
 
-func (c *Client) FillScreen(clr color.RGBA) {
+func (c *Client) FillScreen(clr color.Color) {
 	c.FillRectangle(0, 0, int16(c.Width), int16(c.Height), clr)
 }
 
-func (c *Client) FillRectangle(x, y, width, height int16, clr color.RGBA) error {
+func (c *Client) FillRectangle(x, y, width, height int16, clr color.Color) error {
 	for yy := y; yy < y+height; yy++ {
 		for xx := x; xx < x+width; xx++ {
 			c.Image.Set(int(xx), int(yy), clr)
