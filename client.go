@@ -13,7 +13,7 @@ import (
 
 type Client struct {
 	Client *rpc.Client
-	Image  draw.Image
+	draw.Image
 	mu     sync.Mutex
 	Width  int
 	Height int
@@ -128,18 +128,6 @@ func (c *Client) update() error {
 		panic(err)
 	}
 	return nil
-}
-
-func (c *Client) ColorModel() color.Model {
-	return c.Image.ColorModel()
-}
-
-func (c *Client) Bounds() image.Rectangle {
-	return c.Image.Bounds()
-}
-
-func (c *Client) At(x, y int) color.Color {
-	return c.Image.At(x, y)
 }
 
 func (c *Client) Set(x, y int, clr color.Color) {
