@@ -58,7 +58,7 @@ func (c *Client) Size() (x, y int16) {
 	return ret.X, ret.Y
 }
 
-func (c *Client) SetPixel(x, y int16, clr color.Color) {
+func (c *Client) SetPixel(x, y int16, clr color.RGBA) {
 	c.Set(int(x), int(y), clr)
 }
 
