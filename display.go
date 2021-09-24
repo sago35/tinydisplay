@@ -1,6 +1,7 @@
 package tinydisplay
 
 import (
+	"fmt"
 	"image"
 	"image/color"
 	"image/draw"
@@ -31,6 +32,10 @@ func New(w, h int) *Device {
 	wi.SetContent(container.NewVBox(
 		cimage,
 	))
+	canvas := wi.Canvas()
+	canvas.SetOnTypedKey(func(ev *fyne.KeyEvent) {
+		fmt.Printf("%#v\n", ev)
+	})
 
 	return &Device{
 		Width:  w,
@@ -95,4 +100,12 @@ func RGB565ToRGBA(c uint16) color.Color {
 		B: uint8((c & 0x001F) << 3),
 		A: 0xFF,
 	}
+}
+
+// RGBATo565 converts a color.RGBA to uint16 used in the display
+func RGBATo565(c color.RGBA) uint16 {
+	r, g, b, _ := c.RGBA()
+	return uint16((r & 0xF800) +
+		((g & 0xFC00) >> 5) +
+		((b & 0xF800) >> 11))
 }
