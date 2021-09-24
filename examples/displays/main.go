@@ -18,6 +18,7 @@ func main() {
 	if err != nil {
 		log.Fatal(err)
 	}
+	display.FillScreen(color.RGBA{0xFF, 0xFF, 0xFF, 0xFF})
 
 	mycolors := make([]color.RGBA, 20)
 	for k := 0; k < 20; k++ {

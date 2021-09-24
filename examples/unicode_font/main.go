@@ -15,6 +15,7 @@ func main() {
 	if err != nil {
 		log.Fatal(err)
 	}
+	display.FillScreen(color.RGBA{0xFF, 0xFF, 0xFF, 0xFF})
 
 	str := "\x23\x30\x31\x32\x33\x34\x35\x36\x37\n" +
 		"\x38\x39\u00A9\u00AE\u203C\u2049\u20E3\u2122\u2139\n" +

@@ -21,6 +21,7 @@ func main() {
 
 	display.ClearBuffer()
 	display.ClearDisplay()
+	display.FillScreen(color.RGBA{0xFF, 0xFF, 0xFF, 0xFF})
 
 	tinydraw.Line(&display, 10, 10, 94, 10, black)
 	tinydraw.Line(&display, 94, 16, 10, 16, yellow)
