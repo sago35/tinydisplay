@@ -33,7 +33,7 @@ func run() error {
 	kb = tinykb.New(display, 0, 150)
 	kb.Display()
 
-	str := "hello world hello world hello world hello world"
+	str := ""
 	needsRedraw := true
 	for {
 		key := display.GetPressedKey()
@@ -53,12 +53,13 @@ func run() error {
 				str += "\n"
 			case tinykb.KeyBackspace:
 				str = str[:len(str)-1]
+			case tinykb.KeyClose:
+				fmt.Printf("%q\n", str)
+				return nil
 			default:
 				str += fmt.Sprintf("%c", k)
 			}
 			needsRedraw = true
-		case tinykb.KeyClose:
-			return nil
 		default:
 			needsWait = false
 		}
