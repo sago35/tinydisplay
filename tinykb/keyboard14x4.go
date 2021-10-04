@@ -3,7 +3,7 @@ package tinykb
 import "tinygo.org/x/drivers"
 
 type Keyboard14x4 struct {
-	Layout  [4][14]Key
+	Layout  [2][4][14]Key
 	Disp    drivers.Displayer
 	bgcolor uint16
 	fgcolor uint16
@@ -11,85 +11,69 @@ type Keyboard14x4 struct {
 	Row     int
 	X       int16
 	Y       int16
+	layer   int
+}
+
+var Keyboard14x4Layout = [2][4][14]Key{
+	{
+		{
+			'`', '1', '2', '3', '4', '5', '6', '7', '8', '9', '0', '-', '=',
+			KeyBackspace,
+		},
+		{
+			'q', 'w', 'e', 'r', 't', 'y', 'u', 'i', 'o', 'p', '[', ']', '\\',
+			KeyTab,
+		},
+		{
+			'a', 's', 'd', 'f', 'g', 'h', 'j', 'k', 'l', ';', '\'',
+			KeyReturn,
+			KeyUp,
+			KeyShift,
+		},
+		{
+			'z', 'x', 'c', 'v', 'b', 'n', 'm', ',', '.', '/', ' ',
+			KeyLeft,
+			KeyDown,
+			KeyRight,
+		},
+	},
+	{
+		{
+			'~', '!', '@', '#', '$', '%', '^', '&', '*', '(', ')', '_', '+',
+			KeyBackspace,
+		},
+		{
+			'Q', 'W', 'E', 'R', 'T', 'Y', 'U', 'I', 'O', 'P', '{', '}', '|',
+			KeyClose,
+		},
+		{
+			'A', 'S', 'D', 'F', 'G', 'H', 'J', 'K', 'L', ':', '"',
+			KeyReturn,
+			KeyUp,
+			KeyShiftRelease,
+		},
+		{
+			'Z', 'X', 'C', 'V', 'B', 'N', 'M', '<', '>', '?', ' ',
+			KeyLeft,
+			KeyDown,
+			KeyRight,
+		},
+	},
 }
 
 func New(display drivers.Displayer, x, y int16) *Keyboard14x4 {
 	return &Keyboard14x4{
-		Disp: display,
-		Layout: [4][14]Key{
-			{
-				Key{Code: '`'},
-				Key{Code: '1'},
-				Key{Code: '2'},
-				Key{Code: '3'},
-				Key{Code: '4'},
-				Key{Code: '5'},
-				Key{Code: '6'},
-				Key{Code: '7'},
-				Key{Code: '8'},
-				Key{Code: '9'},
-				Key{Code: '0'},
-				Key{Code: '-'},
-				Key{Code: '='},
-				Key{Code: KeyBackspace},
-			},
-			{
-				Key{Code: 'q'},
-				Key{Code: 'w'},
-				Key{Code: 'e'},
-				Key{Code: 'r'},
-				Key{Code: 't'},
-				Key{Code: 'y'},
-				Key{Code: 'u'},
-				Key{Code: 'i'},
-				Key{Code: 'o'},
-				Key{Code: 'p'},
-				Key{Code: '['},
-				Key{Code: ']'},
-				Key{Code: '\\'},
-				Key{Code: KeyTab},
-			},
-			{
-				Key{Code: 'a'},
-				Key{Code: 's'},
-				Key{Code: 'd'},
-				Key{Code: 'f'},
-				Key{Code: 'g'},
-				Key{Code: 'h'},
-				Key{Code: 'j'},
-				Key{Code: 'k'},
-				Key{Code: 'l'},
-				Key{Code: ';'},
-				Key{Code: '\''},
-				Key{Code: KeyReturn},
-				Key{Code: KeyUp},
-				Key{Code: KeyClose},
-			},
-			{
-				Key{Code: 'z'},
-				Key{Code: 'x'},
-				Key{Code: 'c'},
-				Key{Code: 'v'},
-				Key{Code: 'b'},
-				Key{Code: 'n'},
-				Key{Code: 'm'},
-				Key{Code: ','},
-				Key{Code: '.'},
-				Key{Code: '/'},
-				Key{Code: ' '},
-				Key{Code: KeyLeft},
-				Key{Code: KeyDown},
-				Key{Code: KeyRight},
-			},
-		},
-		X: x,
-		Y: y,
+		Disp:   display,
+		Layout: Keyboard14x4Layout,
+		layer:  0,
+		X:      x,
+		Y:      y,
 	}
 }
 
 func (k *Keyboard14x4) Display() {
-	for row := 0; row < len(k.Layout); row++ {
-		for col := 0; col < len(k.Layout[0]); col++ {
+	for row := 0; row < len(k.Layout[k.layer]); row++ {
+		for col := 0; col < len(k.Layout[k.layer][0]); col++ {
 			if col == k.Column && row == k.Row {
 				k.Redraw(col, row, true)
 			} else {
@@ -100,7 +84,7 @@ func (k *Keyboard14x4) Display() {
 }
 
 func (k *Keyboard14x4) Redraw(col, row int, selected bool) {
-	btn := k.Layout[row][col]
+	btn := k.Layout[k.layer][row][col]
 	xxx := k.X + (sz+1)*(int16(col)+0) + sz/2*0
 	yyy := k.Y + ((sz + 1) * int16(row))
 	if selected {
@@ -116,21 +100,26 @@ func (k *Keyboard14x4) Redraw(col, row int, selected bool) {
 }
 
 func (k *Keyboard14x4) GetKey() Key {
-	return k.Layout[k.Row][k.Column]
+	return k.Layout[k.layer][k.Row][k.Column]
+}
+
+func (k *Keyboard14x4) Layer(index int) {
+	k.layer = index
+	k.Display()
 }
 
 func (k *Keyboard14x4) KeyEvent(key Key) {
 	col := k.Column
 	row := k.Row
-	switch key.Code {
+	switch key {
 	case KeyRight:
-		col = (col + len(k.Layout[0]) + 1) % len(k.Layout[0])
+		col = (col + len(k.Layout[k.layer][0]) + 1) % len(k.Layout[k.layer][0])
 	case KeyLeft:
-		col = (col + len(k.Layout[0]) - 1) % len(k.Layout[0])
+		col = (col + len(k.Layout[k.layer][0]) - 1) % len(k.Layout[k.layer][0])
 	case KeyUp:
-		row = (row + len(k.Layout) - 1) % len(k.Layout)
+		row = (row + len(k.Layout[k.layer]) - 1) % len(k.Layout[k.layer])
 	case KeyDown:
-		row = (row + len(k.Layout) + 1) % len(k.Layout)
+		row = (row + len(k.Layout[k.layer]) + 1) % len(k.Layout[k.layer])
 	default:
 		return
 	}

@@ -19,9 +19,7 @@ var (
 	fontHeight int16
 )
 
-type Key struct {
-	Code rune
-}
+type Key rune
 
 var keyboardFont = &Regular9pt7b
 
@@ -45,7 +43,7 @@ func (k *Key) Display() error {
 		buf[i] = bgcolor
 	}
 
-	tinyfont.WriteLine(k, keyboardFont, 4, int16(fontHeight)+4, string(k.Code), tinydisplay.RGB565ToRGBA(fgcolor))
+	tinyfont.WriteLine(k, keyboardFont, 4, int16(fontHeight)+4, string(*k), tinydisplay.RGB565ToRGBA(fgcolor))
 	return nil
 }
 
@@ -54,30 +52,32 @@ func (k *Key) DisplaySelected() error {
 		buf[i] = bgcolor
 	}
 
-	tinyfont.WriteLine(k, keyboardFont, 4, int16(fontHeight)+4, string(k.Code), color.RGBA{0xFF, 0x00, 0x00, 0xFF})
+	tinyfont.WriteLine(k, keyboardFont, 4, int16(fontHeight)+4, string(*k), color.RGBA{0xFF, 0x00, 0x00, 0xFF})
 	return nil
 }
 
 const (
-	KeyEscape    = 0x100
-	KeyReturn    = 0x101
-	KeyTab       = 0x102
-	KeyBackspace = 0x103
-	KeyInsert    = 0x104
-	KeyDelete    = 0x105
-	KeyRight     = 0x106
-	KeyLeft      = 0x107
-	KeyDown      = 0x108
-	KeyUp        = 0x109
-	KeyPageUp    = 0x10A
-	KeyPageDown  = 0x10B
-	KeyHome      = 0x10C
-	KeyEnd       = 0x10D
-	KeyClose     = 0x1FF
+	KeyEscape       = 0x100
+	KeyReturn       = 0x101
+	KeyTab          = 0x102
+	KeyBackspace    = 0x103
+	KeyInsert       = 0x104
+	KeyDelete       = 0x105
+	KeyRight        = 0x106
+	KeyLeft         = 0x107
+	KeyDown         = 0x108
+	KeyUp           = 0x109
+	KeyPageUp       = 0x10A
+	KeyPageDown     = 0x10B
+	KeyHome         = 0x10C
+	KeyEnd          = 0x10D
+	KeyShift        = 0x1FD
+	KeyShiftRelease = 0x1FE
+	KeyClose        = 0x1FF
 )
 
 func (k Key) String() string {
-	switch k.Code {
+	switch k {
 	case KeyEscape:
 		return "KeyEscape"
 	case KeyReturn:
@@ -106,9 +106,13 @@ func (k Key) String() string {
 		return "KeyHome"
 	case KeyEnd:
 		return "KeyEnd"
+	case KeyShift:
+		return "KeyShift"
+	case KeyShiftRelease:
+		return "KeyShiftRelease"
 	case KeyClose:
 		return "KeyClose"
 	default:
-		return fmt.Sprintf("%c", k.Code)
+		return fmt.Sprintf("%c", k)
 	}
 }

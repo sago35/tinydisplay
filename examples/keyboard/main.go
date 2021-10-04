@@ -40,16 +40,21 @@ func run() error {
 		needsWait := true
 		switch key {
 		case tinykb.KeyRight, tinykb.KeyLeft, tinykb.KeyUp, tinykb.KeyDown:
-			kb.KeyEvent(tinykb.Key{Code: rune(key)})
+			kb.KeyEvent(tinykb.Key(key))
 		case tinykb.KeyReturn:
 			k := kb.GetKey()
-			switch k.Code {
+			//fmt.Printf("%s\n", k)
+			switch k {
+			case tinykb.KeyShift:
+				kb.Layer(1)
+			case tinykb.KeyShiftRelease:
+				kb.Layer(0)
 			case tinykb.KeyReturn:
 				str += "\n"
 			case tinykb.KeyBackspace:
 				str = str[:len(str)-1]
 			default:
-				str += fmt.Sprintf("%c", k.Code)
+				str += fmt.Sprintf("%c", k)
 			}
 			needsRedraw = true
 		case tinykb.KeyClose:

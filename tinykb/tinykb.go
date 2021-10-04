@@ -8,6 +8,7 @@ type Keyboard interface {
 	Display()
 	KeyEvent(key Key)
 	GetKey() Key
+	Layer(index int)
 }
 
 func RGB565ToRGBA(c uint16) color.RGBA {
