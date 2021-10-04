@@ -19,16 +19,18 @@ var (
 func main() {
 	display.FillScreen(black)
 
-	err := run()
-	if err != nil {
-		log.Fatal(err)
-	}
+	for {
+		str, err := run()
+		if err != nil {
+			log.Fatal(err)
+		}
+		fmt.Printf("%q\n", str)
 
-	// TODO: wait しないと表示されないので、描画が非同期コールになってそう
-	time.Sleep(100 * time.Millisecond)
+		time.Sleep(500 * time.Millisecond)
+	}
 }
 
-func run() error {
+func run() (string, error) {
 	var kb tinykb.Keyboard
 	kb = tinykb.New(display, 0, 150)
 	kb.Display()
@@ -54,8 +56,7 @@ func run() error {
 			case tinykb.KeyBackspace:
 				str = str[:len(str)-1]
 			case tinykb.KeyClose:
-				fmt.Printf("%q\n", str)
-				return nil
+				return str, nil
 			default:
 				str += fmt.Sprintf("%c", k)
 			}
@@ -66,7 +67,7 @@ func run() error {
 
 		if needsRedraw {
 			display.FillRectangle(0, 0, 320, 150, black)
-			tinyfont.WriteLine(display, &freemono.Regular9pt7b, 0, 35, str, white)
+			tinyfont.WriteLine(display, &freemono.Regular9pt7b, 0, 15, str, white)
 			needsRedraw = false
 		}
 
