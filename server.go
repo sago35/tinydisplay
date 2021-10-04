@@ -3,6 +3,8 @@ package tinydisplay
 import (
 	"image/color"
 	"image/draw"
+
+	"fyne.io/fyne/v2"
 )
 
 type Server struct {
@@ -85,6 +87,17 @@ func (s *Server) Update(args *UpdateArgs, ret *NotImpl) error {
 		}
 	}
 	s.Device.Update()
+	return nil
+}
+
+type GetPressedKeysRetval struct {
+	Keys []fyne.KeyName
+}
+
+func (s *Server) GetPressedKeys(args *NotImpl, ret *GetPressedKeysRetval) error {
+	for key := range s.Device.KeysPressed {
+		ret.Keys = append(ret.Keys, key)
+	}
 	return nil
 }
 

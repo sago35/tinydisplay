@@ -135,3 +135,17 @@ func (c *Client) Set(x, y int, clr color.Color) {
 	c.Image.Set(x, y, clr)
 	c.mu.Unlock()
 }
+
+func (c *Client) GetPressedKey() uint16 {
+	args := NotImpl{}
+	ret := GetPressedKeysRetval{}
+	c.Client.Call("Server.GetPressedKeys", args, &ret)
+
+	for _, key := range ret.Keys {
+		if k, ok := keyMaps[key]; ok {
+			return k
+		}
+	}
+
+	return 0
+}

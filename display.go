@@ -5,19 +5,23 @@ import (
 	"image"
 	"image/color"
 	"image/draw"
+	"sort"
+	"strings"
 
 	"fyne.io/fyne/v2"
 	"fyne.io/fyne/v2/app"
 	"fyne.io/fyne/v2/canvas"
 	"fyne.io/fyne/v2/container"
+	"fyne.io/fyne/v2/driver/desktop"
 )
 
 type Device struct {
-	Width  int
-	Height int
-	canvas *canvas.Image
-	window fyne.Window
-	image  draw.Image
+	Width       int
+	Height      int
+	canvas      *canvas.Image
+	window      fyne.Window
+	image       draw.Image
+	KeysPressed map[fyne.KeyName]bool
 }
 
 func New(w, h int) *Device {
@@ -32,18 +36,42 @@ func New(w, h int) *Device {
 	wi.SetContent(container.NewVBox(
 		cimage,
 	))
-	canvas := wi.Canvas()
-	canvas.SetOnTypedKey(func(ev *fyne.KeyEvent) {
-		fmt.Printf("%#v\n", ev)
-	})
 
-	return &Device{
-		Width:  w,
-		Height: h,
-		window: wi,
-		canvas: cimage,
-		image:  rgba,
+	d := &Device{
+		Width:       w,
+		Height:      h,
+		window:      wi,
+		canvas:      cimage,
+		image:       rgba,
+		KeysPressed: map[fyne.KeyName]bool{},
 	}
+
+	if wc, ok := wi.Canvas().(desktop.Canvas); ok {
+		wc.SetOnKeyDown(func(ev *fyne.KeyEvent) {
+			fmt.Printf("%#v D\n", ev)
+			d.KeysPressed[ev.Name] = true
+			//fmt.Printf("%#v\n", d.KeysPressed)
+			d.DumpPressedKeys()
+		})
+		wc.SetOnKeyUp(func(ev *fyne.KeyEvent) {
+			fmt.Printf("%#v U\n", ev)
+			delete(d.KeysPressed, ev.Name)
+			//fmt.Printf("%#v\n", d.KeysPressed)
+			d.DumpPressedKeys()
+		})
+
+	}
+
+	return d
+}
+
+func (d *Device) DumpPressedKeys() {
+	keys := []string{}
+	for k, _ := range d.KeysPressed {
+		keys = append(keys, string(k))
+	}
+	sort.Strings(keys)
+	fmt.Printf("%s\n", strings.Join(keys, " "))
 }
 
 func (d *Device) Size() (x, y int16) {
@@ -93,7 +121,7 @@ func (d *Device) ShowAndRun() {
 	d.window.ShowAndRun()
 }
 
-func RGB565ToRGBA(c uint16) color.Color {
+func RGB565ToRGBA(c uint16) color.RGBA {
 	return color.RGBA{
 		R: uint8((c & 0xF800) >> 8),
 		G: uint8((c & 0x07E0) >> 3),
