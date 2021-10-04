@@ -22,7 +22,7 @@ var Keyboard14x4Layout = [2][4][14]Key{
 		},
 		{
 			'q', 'w', 'e', 'r', 't', 'y', 'u', 'i', 'o', 'p', '[', ']', '\\',
-			KeyTab,
+			KeyClose,
 		},
 		{
 			'a', 's', 'd', 'f', 'g', 'h', 'j', 'k', 'l', ';', '\'',
@@ -44,7 +44,7 @@ var Keyboard14x4Layout = [2][4][14]Key{
 		},
 		{
 			'Q', 'W', 'E', 'R', 'T', 'Y', 'U', 'I', 'O', 'P', '{', '}', '|',
-			KeyClose,
+			KeyTab,
 		},
 		{
 			'A', 'S', 'D', 'F', 'G', 'H', 'J', 'K', 'L', ':', '"',
