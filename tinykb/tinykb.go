@@ -6,6 +6,7 @@ import (
 
 type Keyboard interface {
 	Display()
+	Redraw(col, row int, selected bool)
 	KeyEvent(key Key)
 	GetKey() Key
 	Layer(index int)
