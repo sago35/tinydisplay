@@ -3,6 +3,10 @@ package tinydisplay
 import (
 	"image/color"
 	"image/draw"
+	"sort"
+	"strings"
+
+	"fyne.io/fyne/v2"
 )
 
 type Server struct {
@@ -85,6 +89,22 @@ func (s *Server) Update(args *UpdateArgs, ret *NotImpl) error {
 		}
 	}
 	s.Device.Update()
+	return nil
+}
+
+type GetPressedKeysRetval struct {
+	Keys []fyne.KeyName
+}
+
+func (s *Server) GetPressedKeys(args *NotImpl, ret *GetPressedKeysRetval) error {
+	s.Device.mu.Lock()
+	for key := range s.Device.KeysPressed {
+		ret.Keys = append(ret.Keys, key)
+	}
+	sort.Slice(ret.Keys, func(i, j int) bool {
+		return strings.Compare(string(ret.Keys[i]), string(ret.Keys[j])) < 0
+	})
+	s.Device.mu.Unlock()
 	return nil
 }
 

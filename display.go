@@ -1,22 +1,29 @@
 package tinydisplay
 
 import (
+	"fmt"
 	"image"
 	"image/color"
 	"image/draw"
+	"sort"
+	"strings"
+	"sync"
 
 	"fyne.io/fyne/v2"
 	"fyne.io/fyne/v2/app"
 	"fyne.io/fyne/v2/canvas"
 	"fyne.io/fyne/v2/container"
+	"fyne.io/fyne/v2/driver/desktop"
 )
 
 type Device struct {
-	Width  int
-	Height int
-	canvas *canvas.Image
-	window fyne.Window
-	image  draw.Image
+	Width       int
+	Height      int
+	canvas      *canvas.Image
+	window      fyne.Window
+	image       draw.Image
+	KeysPressed map[fyne.KeyName]bool
+	mu          sync.Mutex
 }
 
 func New(w, h int) *Device {
@@ -32,13 +39,41 @@ func New(w, h int) *Device {
 		cimage,
 	))
 
-	return &Device{
-		Width:  w,
-		Height: h,
-		window: wi,
-		canvas: cimage,
-		image:  rgba,
+	d := &Device{
+		Width:       w,
+		Height:      h,
+		window:      wi,
+		canvas:      cimage,
+		image:       rgba,
+		KeysPressed: map[fyne.KeyName]bool{},
 	}
+
+	if wc, ok := wi.Canvas().(desktop.Canvas); ok {
+		wc.SetOnKeyDown(func(ev *fyne.KeyEvent) {
+			d.mu.Lock()
+			d.KeysPressed[ev.Name] = true
+			d.mu.Unlock()
+			d.DumpPressedKeys()
+		})
+		wc.SetOnKeyUp(func(ev *fyne.KeyEvent) {
+			d.mu.Lock()
+			delete(d.KeysPressed, ev.Name)
+			d.mu.Unlock()
+			d.DumpPressedKeys()
+		})
+
+	}
+
+	return d
+}
+
+func (d *Device) DumpPressedKeys() {
+	keys := []string{}
+	for k, _ := range d.KeysPressed {
+		keys = append(keys, string(k))
+	}
+	sort.Strings(keys)
+	fmt.Printf("%s\n", strings.Join(keys, " "))
 }
 
 func (d *Device) Size() (x, y int16) {
@@ -88,11 +123,19 @@ func (d *Device) ShowAndRun() {
 	d.window.ShowAndRun()
 }
 
-func RGB565ToRGBA(c uint16) color.Color {
+func RGB565ToRGBA(c uint16) color.RGBA {
 	return color.RGBA{
 		R: uint8((c & 0xF800) >> 8),
 		G: uint8((c & 0x07E0) >> 3),
 		B: uint8((c & 0x001F) << 3),
 		A: 0xFF,
 	}
+}
+
+// RGBATo565 converts a color.RGBA to uint16 used in the display
+func RGBATo565(c color.RGBA) uint16 {
+	r, g, b, _ := c.RGBA()
+	return uint16((r & 0xF800) +
+		((g & 0xFC00) >> 5) +
+		((b & 0xF800) >> 11))
 }
