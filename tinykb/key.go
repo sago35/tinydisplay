@@ -4,14 +4,14 @@ import (
 	"fmt"
 	"image/color"
 
-	"github.com/sago35/tinydisplay"
 	"tinygo.org/x/tinyfont"
 )
 
 const (
-	sz      = 22
-	fgcolor = uint16(0x0000)
-	bgcolor = uint16(0xFFFF)
+	sz            = 22
+	fgcolor       = uint16(0x0000)
+	bgcolor       = uint16(0xFFFF)
+	selectedColor = uint16(0xC618)
 )
 
 var (
@@ -35,7 +35,7 @@ func (k *Key) SetPixel(x, y int16, c color.RGBA) {
 	if x < 0 || y < 0 || sz < x || sz < y {
 		return
 	}
-	buf[y*sz+x] = tinydisplay.RGBATo565(c)
+	buf[y*sz+x] = RGBATo565(c)
 }
 
 func (k *Key) Display() error {
@@ -43,13 +43,13 @@ func (k *Key) Display() error {
 		buf[i] = bgcolor
 	}
 
-	tinyfont.WriteLine(k, keyboardFont, 4, int16(fontHeight)+4, string(*k), tinydisplay.RGB565ToRGBA(fgcolor))
+	tinyfont.WriteLine(k, keyboardFont, 4, int16(fontHeight)+4, string(*k), RGB565ToRGBA(fgcolor))
 	return nil
 }
 
 func (k *Key) DisplaySelected() error {
 	for i := range buf {
-		buf[i] = bgcolor
+		buf[i] = selectedColor
 	}
 
 	tinyfont.WriteLine(k, keyboardFont, 4, int16(fontHeight)+4, string(*k), color.RGBA{0xFF, 0x00, 0x00, 0xFF})

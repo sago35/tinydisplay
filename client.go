@@ -147,5 +147,5 @@ func (c *Client) GetPressedKey() uint16 {
 		}
 	}
 
-	return 0
+	return 0xFFFF
 }

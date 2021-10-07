@@ -1,3 +1,6 @@
+//go:build !baremetal
+// +build !baremetal
+
 package main
 
 import (
@@ -20,4 +23,8 @@ func init() {
 
 	display.FillScreen(white)
 	time.Sleep(100 * time.Millisecond)
+}
+
+func GetPressedKey() uint16 {
+	return display.GetPressedKey()
 }
