@@ -3,6 +3,8 @@ package tinydisplay
 import (
 	"image/color"
 	"image/draw"
+	"sort"
+	"strings"
 
 	"fyne.io/fyne/v2"
 )
@@ -99,6 +101,9 @@ func (s *Server) GetPressedKeys(args *NotImpl, ret *GetPressedKeysRetval) error 
 	for key := range s.Device.KeysPressed {
 		ret.Keys = append(ret.Keys, key)
 	}
+	sort.Slice(ret.Keys, func(i, j int) bool {
+		return strings.Compare(string(ret.Keys[i]), string(ret.Keys[j])) < 0
+	})
 	s.Device.mu.Unlock()
 	return nil
 }
