@@ -7,6 +7,7 @@ import (
 	"image/draw"
 	"sort"
 	"strings"
+	"sync"
 
 	"fyne.io/fyne/v2"
 	"fyne.io/fyne/v2/app"
@@ -22,6 +23,7 @@ type Device struct {
 	window      fyne.Window
 	image       draw.Image
 	KeysPressed map[fyne.KeyName]bool
+	mu          sync.Mutex
 }
 
 func New(w, h int) *Device {
@@ -49,13 +51,17 @@ func New(w, h int) *Device {
 	if wc, ok := wi.Canvas().(desktop.Canvas); ok {
 		wc.SetOnKeyDown(func(ev *fyne.KeyEvent) {
 			fmt.Printf("%#v D\n", ev)
+			d.mu.Lock()
 			d.KeysPressed[ev.Name] = true
+			d.mu.Unlock()
 			//fmt.Printf("%#v\n", d.KeysPressed)
 			d.DumpPressedKeys()
 		})
 		wc.SetOnKeyUp(func(ev *fyne.KeyEvent) {
 			fmt.Printf("%#v U\n", ev)
+			d.mu.Lock()
 			delete(d.KeysPressed, ev.Name)
+			d.mu.Unlock()
 			//fmt.Printf("%#v\n", d.KeysPressed)
 			d.DumpPressedKeys()
 		})

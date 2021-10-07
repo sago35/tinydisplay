@@ -95,9 +95,11 @@ type GetPressedKeysRetval struct {
 }
 
 func (s *Server) GetPressedKeys(args *NotImpl, ret *GetPressedKeysRetval) error {
+	s.Device.mu.Lock()
 	for key := range s.Device.KeysPressed {
 		ret.Keys = append(ret.Keys, key)
 	}
+	s.Device.mu.Unlock()
 	return nil
 }
 
