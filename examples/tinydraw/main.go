@@ -2,25 +2,19 @@ package main
 
 import (
 	"image/color"
-	"log"
+	"time"
 
-	"github.com/sago35/tinydisplay"
+	"github.com/sago35/tinydisplay/examples/initdisplay"
 	"tinygo.org/x/tinydraw"
 )
 
 func main() {
-	d, err := tinydisplay.NewClient("127.0.0.1", 9812, 320, 240)
-	if err != nil {
-		log.Fatal(err)
-	}
-	display := *d
+	display := *initdisplay.InitDisplay()
 
 	//white := color.RGBA{0, 0, 0, 255}
 	yellow := color.RGBA{255, 0, 0, 255}
 	black := color.RGBA{1, 1, 1, 255}
 
-	display.ClearBuffer()
-	display.ClearDisplay()
 	display.FillScreen(color.RGBA{0xFF, 0xFF, 0xFF, 0xFF})
 
 	tinydraw.Line(&display, 10, 10, 94, 10, black)
@@ -51,6 +45,6 @@ func main() {
 	tinydraw.FilledTriangle(&display, 65, 114, 96, 130, 84, 145, yellow)
 
 	display.Display()
-	display.WaitUntilIdle()
+	time.Sleep(1 * time.Second)
 	println("You could remove power now")
 }

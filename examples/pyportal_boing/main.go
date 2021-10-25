@@ -5,7 +5,7 @@ package main
 import (
 	"time"
 
-	"github.com/sago35/tinydisplay"
+	"github.com/sago35/tinydisplay/examples/initdisplay"
 	"tinygo.org/x/drivers/examples/ili9341/pyportal_boing/graphics"
 )
 
@@ -43,14 +43,15 @@ var (
 	palette [16]uint16
 )
 
-var display *tinydisplay.Client
+var display Display
+
+type Display interface {
+	Size() (x, y int16)
+	DrawRGBBitmap8(x, y int16, data []uint8, w, h int16) error
+}
 
 func main() {
-	var err error
-	display, err = tinydisplay.NewClient("127.0.0.1", 9812, 320, 240)
-	if err != nil {
-		panic(err)
-	}
+	display = initdisplay.InitDisplay()
 	width, height := display.Size()
 	println(width, height)
 

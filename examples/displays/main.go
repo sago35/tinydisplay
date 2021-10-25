@@ -2,10 +2,9 @@ package main
 
 import (
 	"image/color"
-	"log"
 	"time"
 
-	"github.com/sago35/tinydisplay"
+	"github.com/sago35/tinydisplay/examples/initdisplay"
 	"tinygo.org/x/tinyfont"
 	"tinygo.org/x/tinyfont/freemono"
 	"tinygo.org/x/tinyfont/freesans"
@@ -14,10 +13,7 @@ import (
 )
 
 func main() {
-	display, err := tinydisplay.NewClient("", 9812, 320, 240)
-	if err != nil {
-		log.Fatal(err)
-	}
+	display := initdisplay.InitDisplay()
 	display.FillScreen(color.RGBA{0xFF, 0xFF, 0xFF, 0xFF})
 
 	mycolors := make([]color.RGBA, 20)

@@ -2,19 +2,15 @@ package main
 
 import (
 	"image/color"
-	"log"
 	"time"
 
-	"github.com/sago35/tinydisplay"
+	"github.com/sago35/tinydisplay/examples/initdisplay"
 	"tinygo.org/x/tinyfont"
 	"tinygo.org/x/tinyfont/notoemoji"
 )
 
 func main() {
-	display, err := tinydisplay.NewClient("127.0.0.1", 9812, 320, 240)
-	if err != nil {
-		log.Fatal(err)
-	}
+	display := initdisplay.InitDisplay()
 	display.FillScreen(color.RGBA{0xFF, 0xFF, 0xFF, 0xFF})
 
 	str := "\x23\x30\x31\x32\x33\x34\x35\x36\x37\n" +

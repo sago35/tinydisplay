@@ -2,10 +2,9 @@ package main
 
 import (
 	"image/color"
-	"log"
 	"time"
 
-	"github.com/sago35/tinydisplay"
+	"github.com/sago35/tinydisplay/examples/initdisplay"
 )
 
 var (
@@ -17,10 +16,7 @@ var (
 )
 
 func main() {
-	display, err := tinydisplay.NewClient("", 9812, 320, 240)
-	if err != nil {
-		log.Fatal(err)
-	}
+	display := initdisplay.InitDisplay()
 	width, height := display.Size()
 
 	display.FillScreen(black)
