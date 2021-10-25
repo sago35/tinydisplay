@@ -74,6 +74,21 @@ $ go run ./examples/tinydraw
 $ go run ./examples/unicode_font
 ```
 
+### Examples
+
+[./examples](./examples) will work with both tinydisplay and wioterminal.  
+To make it work with tinydisplay, run `go-build`.  
+
+```
+$ go run ./examples/basic
+```
+
+If you want to run it using a target such as wioterminal, please run `tinygo flash`.  
+
+```
+$ tinygo flash --target wioterminal --size short ./examples/basic
+```
+
 ## Author
 
 sago35 - <sago35@gmail.com>
