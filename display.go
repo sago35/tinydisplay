@@ -1,12 +1,10 @@
 package tinydisplay
 
 import (
-	"fmt"
 	"image"
 	"image/color"
 	"image/draw"
 	"sort"
-	"strings"
 	"sync"
 
 	"fyne.io/fyne/v2"
@@ -73,7 +71,6 @@ func (d *Device) DumpPressedKeys() {
 		keys = append(keys, string(k))
 	}
 	sort.Strings(keys)
-	fmt.Printf("%s\n", strings.Join(keys, " "))
 }
 
 func (d *Device) Size() (x, y int16) {
