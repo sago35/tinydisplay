@@ -12,16 +12,79 @@ import (
 	"fyne.io/fyne/v2/canvas"
 	"fyne.io/fyne/v2/container"
 	"fyne.io/fyne/v2/driver/desktop"
+	"fyne.io/fyne/v2/widget"
+	"tinygo.org/x/drivers/touch"
 )
 
+type touchWidget struct {
+	widget.BaseWidget
+	obj fyne.CanvasObject
+	d   *Device
+}
+
+func (s *touchWidget) CreateRenderer() fyne.WidgetRenderer {
+	return widget.NewSimpleRenderer(s.obj)
+}
+
+func (s *touchWidget) setTouchPoint(p fyne.Position) {
+
+	x := int(p.X)
+	y := int(p.Y)
+
+	//Clamp X & Y values to width and height. If the pointer is moved outside the window these values may be negative or larger than the window
+	if x < 0 {
+		x = 0
+	} else if x >= s.d.Width {
+		x = s.d.Width - 1
+	}
+
+	if y < 0 {
+		y = 0
+	} else if y >= s.d.Height {
+		y = s.d.Height - 1
+	}
+
+	s.d.TouchPoint.X = x * ((1 << 16) / s.d.Width)
+	s.d.TouchPoint.Y = y * ((1 << 16) / s.d.Height)
+	s.d.TouchPoint.Z = 0xFFFF
+}
+
+func (s *touchWidget) Tapped(p *fyne.PointEvent) {
+	s.d.mu.Lock()
+
+	s.setTouchPoint(p.Position)
+
+	s.d.mu.Unlock()
+}
+
+func (s *touchWidget) Dragged(d *fyne.DragEvent) {
+	s.d.mu.Lock()
+
+	s.setTouchPoint(d.Position)
+	s.d.DragInProgress = true
+
+	s.d.mu.Unlock()
+}
+
+func (s *touchWidget) DragEnd() {
+	s.d.mu.Lock()
+
+	//Leave previous touch point set as it may not have been read yet
+	s.d.DragInProgress = false
+
+	s.d.mu.Unlock()
+}
+
 type Device struct {
-	Width       int
-	Height      int
-	canvas      *canvas.Image
-	window      fyne.Window
-	image       draw.Image
-	KeysPressed map[fyne.KeyName]bool
-	mu          sync.Mutex
+	Width          int
+	Height         int
+	canvas         *canvas.Image
+	window         fyne.Window
+	image          draw.Image
+	KeysPressed    map[fyne.KeyName]bool
+	TouchPoint     touch.Point
+	DragInProgress bool
+	mu             sync.Mutex
 }
 
 func New(w, h int) *Device {
@@ -33,8 +96,13 @@ func New(w, h int) *Device {
 	rgba := image.NewRGBA(image.Rectangle{Min: image.Point{0, 0}, Max: image.Point{w, h}})
 	cimage.Image = rgba
 
+	o := &touchWidget{
+		obj: cimage,
+	}
+	o.ExtendBaseWidget(o)
+
 	wi.SetContent(container.NewVBox(
-		cimage,
+		o,
 	))
 
 	d := &Device{
@@ -45,6 +113,8 @@ func New(w, h int) *Device {
 		image:       rgba,
 		KeysPressed: map[fyne.KeyName]bool{},
 	}
+
+	o.d = d
 
 	if wc, ok := wi.Canvas().(desktop.Canvas); ok {
 		wc.SetOnKeyDown(func(ev *fyne.KeyEvent) {
