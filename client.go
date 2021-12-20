@@ -92,6 +92,19 @@ func (c *Client) FillRectangle(x, y, width, height int16, clr color.Color) error
 	return nil
 }
 
+func (c *Client) DrawRectangle(x, y, width, height int16, clr color.Color) error {
+	for yy := y; yy < y+height; yy++ {
+		c.Image.Set(int(x), int(yy), clr)
+		c.Image.Set(int(x+width-1), int(yy), clr)
+	}
+
+	for xx := x; xx < x+width; xx++ {
+		c.Image.Set(int(xx), int(y), clr)
+		c.Image.Set(int(xx), int(y+height-1), clr)
+	}
+	return nil
+}
+
 func (c *Client) DrawRGBBitmap(x, y int16, data []uint16, w, h int16) error {
 	index := 0
 	for yy := y; yy < y+h; yy++ {
