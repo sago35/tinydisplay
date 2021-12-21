@@ -7,6 +7,7 @@ import (
 	"strings"
 
 	"fyne.io/fyne/v2"
+	"tinygo.org/x/drivers/touch"
 )
 
 type Server struct {
@@ -105,6 +106,22 @@ func (s *Server) GetPressedKeys(args *NotImpl, ret *GetPressedKeysRetval) error 
 		return strings.Compare(string(ret.Keys[i]), string(ret.Keys[j])) < 0
 	})
 	s.Device.mu.Unlock()
+	return nil
+}
+
+func (s *Server) ReadTouchPoint(args *NotImpl, ret *touch.Point) error {
+
+	s.Device.mu.Lock()
+
+	*ret = s.Device.TouchPoint
+	if !s.Device.DragInProgress {
+		s.Device.TouchPoint.X = 0
+		s.Device.TouchPoint.Y = 0
+		s.Device.TouchPoint.Z = 0
+	}
+
+	s.Device.mu.Unlock()
+
 	return nil
 }
 

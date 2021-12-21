@@ -9,6 +9,8 @@ import (
 	"net/rpc"
 	"sync"
 	"time"
+
+	"tinygo.org/x/drivers/touch"
 )
 
 type Client struct {
@@ -148,4 +150,10 @@ func (c *Client) GetPressedKey() uint16 {
 	}
 
 	return 0xFFFF
+}
+
+func (c *Client) ReadTouchPoint() touch.Point {
+	var ret touch.Point
+	c.Client.Call("Server.ReadTouchPoint", NotImpl{}, &ret)
+	return ret
 }
