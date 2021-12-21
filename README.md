@@ -1,9 +1,18 @@
 # tinydisplay
 
 `tinydisplay` is a tiny display for TinyGo development.  
+It is possible to simulate the input of buttons and touch input.  
 tinydisplay works on windows, macOS and linux.   
 
-[![](https://img.youtube.com/vi/tkNsQnIjE6g/0.jpg)](https://www.youtube.com/watch?v=tkNsQnIjE6g)
+![](./images/tinydisplay_pyportal_boing.gif)
+
+`examples/buttons` is an example that handles button input.  
+
+![](./images/tinydisplay_buttons.gif)
+
+`examples/touch_paint` is an example of handling touch input.  
+
+![](./images/tinydisplay_touch_paint.gif)
 
 ## Usage
 
