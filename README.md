@@ -98,6 +98,16 @@ If you want to run it using a target such as wioterminal, please run `tinygo fla
 $ tinygo flash --target wioterminal --size short ./examples/basic
 ```
 
+## install
+
+```shell
+$ go install github.com/sago35/tinydisplay/cmd/tinydisplay@latest
+```
+
+```
+$ GOPROXY=direct go install github.com/sago35/tinydisplay/cmd/tinydisplay@latest
+```
+
 ## Author
 
 sago35 - <sago35@gmail.com>
