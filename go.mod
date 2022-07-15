@@ -3,10 +3,8 @@ module github.com/sago35/tinydisplay
 go 1.16
 
 require (
-	fyne.io/fyne/v2 v2.1.2
-	tinygo.org/x/drivers v0.19.0
-	tinygo.org/x/tinydraw v0.0.0-20200416172542-c30d6d84353c
-	tinygo.org/x/tinyfont v0.2.1
+	fyne.io/fyne/v2 v2.2.3
+	tinygo.org/x/drivers v0.21.0
+	tinygo.org/x/tinydraw v0.3.0
+	tinygo.org/x/tinyfont v0.3.0
 )
-
-replace tinygo.org/x/drivers => ../../tinygo-org/drivers
