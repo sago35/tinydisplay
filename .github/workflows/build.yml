@@ -1,0 +1,58 @@
+name: Go package
+
+on: [push]
+
+jobs:
+  build:
+    runs-on: ${{ matrix.os }}
+
+    strategy:
+      matrix:
+        os: [ubuntu-latest, windows-latest, macos-latest]
+
+    steps:
+      - uses: actions/checkout@v3
+
+      - name: Set up Go
+        uses: actions/setup-go@v3
+        with:
+          go-version: 1.19
+
+      - name: Install apt dependencies
+        if: runner.os == 'Linux'
+        run: |
+          sudo apt install --no-install-recommends xorg-dev
+
+      - name: Build
+        run: go build -v ./...
+
+      - name: Test
+        run: go test -v ./...
+
+      - name: Build ./cmd/tinydisplay
+        run: |
+          go build -v ./cmd/tinydisplay
+
+      - name: Publish artifact for ubuntu-latest
+        if: runner.os == 'Linux'
+        uses: actions/upload-artifact@v2
+        with:
+          name: linux-amd64-zipped
+          path: |
+            tinydisplay
+
+      - name: Publish artifact for windows-latest
+        if: runner.os == 'Windows'
+        uses: actions/upload-artifact@v2
+        with:
+          name: windows-amd64-zipped
+          path: |
+            tinydisplay.exe
+
+      - name: Publish artifact for macos-latest
+        if: runner.os == 'macOS'
+        uses: actions/upload-artifact@v2
+        with:
+          name: macos-amd64-zipped
+          path: |
+            tinydisplay
