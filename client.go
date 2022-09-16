@@ -10,6 +10,7 @@ import (
 	"sync"
 	"time"
 
+	"github.com/sago35/tinydisplay/defines"
 	"tinygo.org/x/drivers/touch"
 )
 
@@ -51,8 +52,8 @@ func (c *Client) Tick() {
 }
 
 func (c *Client) Size() (x, y int16) {
-	args := NotImpl{}
-	ret := SizeRetval{}
+	args := defines.NotImpl{}
+	ret := defines.SizeRetval{}
 	err := c.Client.Call("Server.Size", args, &ret)
 	if err != nil {
 		panic(err)
@@ -136,8 +137,8 @@ func (c *Client) SetImage(img draw.Image) {
 }
 
 func (c *Client) update() error {
-	args := UpdateArgs{Image: c.Image}
-	ret := NotImpl{}
+	args := defines.UpdateArgs{Image: c.Image}
+	ret := defines.NotImpl{}
 	err := c.Client.Call("Server.Update", args, &ret)
 	if err != nil {
 		panic(err)
@@ -152,8 +153,8 @@ func (c *Client) Set(x, y int, clr color.Color) {
 }
 
 func (c *Client) GetPressedKey() uint16 {
-	args := NotImpl{}
-	ret := GetPressedKeysRetval{}
+	args := defines.NotImpl{}
+	ret := defines.GetPressedKeysRetval{}
 	c.Client.Call("Server.GetPressedKeys", args, &ret)
 
 	for _, key := range ret.Keys {
@@ -167,6 +168,6 @@ func (c *Client) GetPressedKey() uint16 {
 
 func (c *Client) ReadTouchPoint() touch.Point {
 	var ret touch.Point
-	c.Client.Call("Server.ReadTouchPoint", NotImpl{}, &ret)
+	c.Client.Call("Server.ReadTouchPoint", defines.NotImpl{}, &ret)
 	return ret
 }

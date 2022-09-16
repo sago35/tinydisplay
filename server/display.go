@@ -1,4 +1,4 @@
-package tinydisplay
+package server
 
 import (
 	"image"
