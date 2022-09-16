@@ -8,7 +8,7 @@ import (
 	"net/http"
 	"net/rpc"
 
-	"github.com/sago35/tinydisplay"
+	"github.com/sago35/tinydisplay/server"
 )
 
 func main() {
@@ -35,7 +35,7 @@ func main() {
 }
 
 func run(addr string, port, w, h int) error {
-	server := tinydisplay.NewServer(w, h)
+	server := server.NewServer(w, h)
 	rpc.Register(server)
 	rpc.HandleHTTP()
 	l, err := net.Listen("tcp", fmt.Sprintf("%s:%d", addr, port))
