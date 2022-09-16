@@ -5,7 +5,6 @@ import (
 	"sort"
 	"strings"
 
-	"github.com/sago35/tinydisplay"
 	"github.com/sago35/tinydisplay/defines"
 	"tinygo.org/x/drivers/touch"
 )
@@ -56,7 +55,7 @@ func (s *Server) ShowAndRun(args, ret *defines.NotImpl) error {
 	return nil
 }
 
-func (s *Server) Update(args *tinydisplay.UpdateArgs, ret *defines.NotImpl) error {
+func (s *Server) Update(args *defines.UpdateArgs, ret *defines.NotImpl) error {
 	for y := 0; y < args.Image.Bounds().Dy(); y++ {
 		for x := 0; x < args.Image.Bounds().Dx(); x++ {
 			s.Device.image.Set(x, y, args.Image.At(x, y))
