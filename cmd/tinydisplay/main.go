@@ -23,7 +23,7 @@ func main() {
 		log.Fatal(err)
 	}
 	if n != 2 {
-		log.Fatal("size format error : n != 2 (%d)", n)
+		log.Fatalf("size format error : n != 2 (%d)", n)
 	}
 
 	fmt.Printf("tcp:%s:%d\n", *addr, *port)
