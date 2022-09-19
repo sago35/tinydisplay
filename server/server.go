@@ -1,6 +1,8 @@
 package server
 
 import (
+	"encoding/gob"
+	"image"
 	"image/color"
 	"sort"
 	"strings"
@@ -8,6 +10,10 @@ import (
 	"github.com/sago35/tinydisplay/defines"
 	"tinygo.org/x/drivers/touch"
 )
+
+func init() {
+	gob.Register(&image.RGBA{})
+}
 
 type Server struct {
 	Device *Device
