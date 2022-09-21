@@ -40,10 +40,6 @@ jobs:
         if: runner.os == 'Linux'
         run: tar cvzf ${{ env.app_name }}.tgz tinydisplay
 
-      - name: Archive for macos-latest
-        if: runner.os == 'macOS'
-        run: tar cvzf ${{ env.app_name }}.tgz tinydisplay
-
       - name: Publish artifact for ubuntu-latest
         if: runner.os == 'Linux'
         uses: actions/upload-artifact@v2
@@ -64,6 +60,6 @@ jobs:
         if: runner.os == 'macOS'
         uses: actions/upload-artifact@v2
         with:
-          name: ${{ env.app_name }}-macos-amd64-double-zipped
+          name: ${{ env.app_name }}-macos-amd64-zipped
           path: |
-            ${{ env.app_name }}.tgz
+            ${{ env.app_name }}
