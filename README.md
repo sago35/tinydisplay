@@ -52,6 +52,8 @@ func main() {
 
 ### Server
 
+CGO is required to build server (`./cmd/tinydisplay`).  
+
 ```
 $ go build ./cmd/tinydisplay
 
@@ -107,6 +109,11 @@ $ go install github.com/sago35/tinydisplay/cmd/tinydisplay@latest
 ```
 $ GOPROXY=direct go install github.com/sago35/tinydisplay/cmd/tinydisplay@latest
 ```
+
+or
+
+* Download from https://github.com/sago35/tinydisplay/releases/latest
+* Download from https://github.com/sago35/tinydisplay/actions
 
 ## Author
 
