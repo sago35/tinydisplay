@@ -2,6 +2,9 @@ name: Go package
 
 on: [push]
 
+env:
+  app_name: tinydisplay
+
 jobs:
   build:
     runs-on: ${{ matrix.os }}
@@ -33,26 +36,30 @@ jobs:
         run: |
           go build -v ./cmd/tinydisplay
 
+      - name: Archive for ubuntu-latest
+        if: runner.os == 'Linux'
+        run: tar cvzf ${{ env.app_name }}.tgz tinydisplay
+
       - name: Publish artifact for ubuntu-latest
         if: runner.os == 'Linux'
         uses: actions/upload-artifact@v2
         with:
-          name: linux-amd64-zipped
+          name: ${{ env.app_name }}-linux-amd64-double-zipped
           path: |
-            tinydisplay
+            ${{ env.app_name }}.tgz
 
       - name: Publish artifact for windows-latest
         if: runner.os == 'Windows'
         uses: actions/upload-artifact@v2
         with:
-          name: windows-amd64-zipped
+          name: ${{ env.app_name }}-windows-amd64-zipped
           path: |
-            tinydisplay.exe
+            ${{ env.app_name }}.exe
 
       - name: Publish artifact for macos-latest
         if: runner.os == 'macOS'
         uses: actions/upload-artifact@v2
         with:
-          name: macos-amd64-zipped
+          name: ${{ env.app_name }}-macos-amd64-zipped
           path: |
-            tinydisplay
+            ${{ env.app_name }}
