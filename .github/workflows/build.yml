@@ -40,10 +40,6 @@ jobs:
         if: runner.os == 'Linux'
         run: tar cvzf ${{ env.app_name }}.tgz tinydisplay
 
-      - name: Archive for windows-latest
-        if: runner.os == 'Windows'
-        run: 7z -tzip a ${{ env.app_name }}.zip tinydisplay.exe
-
       - name: Archive for macos-latest
         if: runner.os == 'macOS'
         run: tar cvzf ${{ env.app_name }}.tgz tinydisplay
@@ -60,9 +56,9 @@ jobs:
         if: runner.os == 'Windows'
         uses: actions/upload-artifact@v2
         with:
-          name: ${{ env.app_name }}-windows-amd64-double-zipped
+          name: ${{ env.app_name }}-windows-amd64-zipped
           path: |
-            ${{ env.app_name }}.zip
+            ${{ env.app_name }}.exe
 
       - name: Publish artifact for macos-latest
         if: runner.os == 'macOS'
