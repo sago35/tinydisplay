@@ -182,7 +182,7 @@ func (d *Device) DrawRGBBitmap8(x, y int16, data []uint8, w, h int16) error {
 }
 
 func (d *Device) Update() error {
-	d.canvas.Refresh()
+	fyne.Do(d.canvas.Refresh)
 	return nil
 }
 
