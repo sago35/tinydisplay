@@ -42,7 +42,7 @@ jobs:
 
       - name: Publish artifact for ubuntu-latest
         if: runner.os == 'Linux'
-        uses: actions/upload-artifact@v2
+        uses: actions/upload-artifact@v4
         with:
           name: ${{ env.app_name }}-linux-amd64-double-zipped
           path: |
@@ -50,7 +50,7 @@ jobs:
 
       - name: Publish artifact for windows-latest
         if: runner.os == 'Windows'
-        uses: actions/upload-artifact@v2
+        uses: actions/upload-artifact@v4
         with:
           name: ${{ env.app_name }}-windows-amd64-zipped
           path: |
@@ -58,7 +58,7 @@ jobs:
 
       - name: Publish artifact for macos-latest
         if: runner.os == 'macOS'
-        uses: actions/upload-artifact@v2
+        uses: actions/upload-artifact@v4
         with:
           name: ${{ env.app_name }}-macos-amd64-zipped
           path: |
